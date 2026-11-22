@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PUFO.App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PUFO"
+        Height="200"
+        Width="400"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="transparent"
+        >
     <Grid>
-
+    <Border
+        x:Name="Capsula"
+        Background="black"
+        CornerRadius="18"
+        Height="35"
+        Width="150"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+        </Border>
     </Grid>
 </Window>
