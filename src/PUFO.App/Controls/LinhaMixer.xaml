@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="PUFO.App.Controls.LinhaMixer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PUFO.App.Controls"
+             Focusable="False">
+    <Grid Margin="0,4,5,4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="26"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="38"/>
+            <ColumnDefinition Width="32"/>
+        </Grid.ColumnDefinitions>
+        <Border Width="24" Height="24" CornerRadius="7" Background="#202024" VerticalAlignment="Center">
+            <Grid>
+                <Path x:Name="Fallback" Data="M 2,3 H 14 V 13 H 2 Z M 2,6 H 14" Stroke="#DEDEE4"
+                      StrokeThickness="1.4" StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image x:Name="Imagem" Width="18" Height="18"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="1" Margin="9,0,4,0">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <DockPanel>
+                <TextBlock x:Name="Atividade" FontSize="10" Foreground="#A9A9B2" DockPanel.Dock="Right" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock x:Name="Nome" TextTrimming="CharacterEllipsis" FontSize="12"/>
+            </DockPanel>
+            <local:SliderSincronizado x:Name="Volume" Grid.Row="1" Style="{DynamicResource VolumeSlider}"
+                                      Height="25" Minimum="0" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"
+                                      SmallChange="1" LargeChange="5" ValueChanged="AoAlterarVolume"/>
+        </Grid>
+        <TextBlock x:Name="Percentual" Grid.Column="2" TextAlignment="Right" Margin="0,0,6,0"
+                   VerticalAlignment="Center" FontSize="11" Foreground="#A5A5AF"/>
+        <Button x:Name="Mute" Grid.Column="3" Style="{DynamicResource IconButton}" Height="30" Width="30" Click="AoAlternarMudo">
+            <Path x:Name="IconeMudo" Style="{DynamicResource Vector}" Width="16" Height="16"/>
+        </Button>
+    </Grid>
+</UserControl>

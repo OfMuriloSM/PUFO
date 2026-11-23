@@ -1,7 +1,8 @@
 namespace PUFO.App;
-enum EstadoIlha {
-        Repouso,
-        Previa,
-        Completo
-    }
 
+internal enum EstadoIlha
+{
+    Repouso,
+    Previa,
+    Completo
+}

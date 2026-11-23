@@ -1,0 +1,26 @@
+<UserControl x:Class="PUFO.App.Controls.PainelConsulta"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Foreground="#F5F5F7" MinWidth="218" MaxWidth="276">
+    <StackPanel Margin="8,3,8,7">
+        <Border Height="1" Background="#262629" Margin="0,0,0,8"/>
+        <DockPanel>
+            <Button x:Name="Atualizar" DockPanel.Dock="Right" Style="{DynamicResource IconButton}" Width="23" Height="23"
+                    Background="Transparent" ToolTip="Atualizar" AutomationProperties.Name="Atualizar lista" Click="AoAtualizar">
+                <Path Data="M 13,6 A 5,5 0 1 0 13,10 M 13,2 V 6 H 9" Style="{DynamicResource Vector}" Width="12" Height="12"/>
+            </Button>
+            <TextBlock x:Name="Titulo" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TextBlock x:Name="Mensagem" Foreground="#ADAEB6" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,3" AutomationProperties.LiveSetting="Polite"/>
+        <ScrollViewer x:Name="Rolagem" MaxHeight="148" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl x:Name="Itens">
+                <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,4">
+                    <TextBlock Text="{Binding Nome}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Nome}" FontSize="12"/>
+                    <TextBlock Text="{Binding Detalhe}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Detalhe}" Foreground="#ADAEB6" FontSize="11"/>
+                </StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Button x:Name="Autorizar" Content="Permitir acesso" Style="{DynamicResource SaidaButton}" Visibility="Collapsed" Click="AoAutorizar"/>
+        <Button x:Name="Ajustes" Style="{DynamicResource SaidaButton}" Padding="0,6" HorizontalAlignment="Left" Click="AoAbrirAjustes"/>
+    </StackPanel>
+</UserControl>

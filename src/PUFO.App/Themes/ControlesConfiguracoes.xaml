@@ -1,0 +1,140 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Preto.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <Style x:Key="Legenda" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource PufoSecondary}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style x:Key="Titulo" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="27"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,0,0,18"/>
+    </Style>
+    <Style x:Key="Cartao" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PufoCard}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PufoBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+    <Style x:Key="Acao" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource PufoText}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Fundo" Background="#26262C" CornerRadius="8" BorderBrush="Transparent" BorderThickness="1" Padding="13,7">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Fundo" Property="Background" Value="#36363D"/></Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Fundo" Property="BorderBrush" Value="#EEEEF3"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Interruptor" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource PufoText}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid Background="Transparent" MinHeight="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <ContentPresenter VerticalAlignment="Center" Margin="0,0,12,0" RecognizesAccessKey="True"/>
+                        <Border x:Name="Trilho" Grid.Column="1" Width="38" Height="22" CornerRadius="11" Background="#373740"
+                                BorderThickness="1" BorderBrush="Transparent" VerticalAlignment="Center" Padding="3">
+                            <Ellipse x:Name="Pino" Width="14" Height="14" HorizontalAlignment="Left" Fill="#AFAFB9"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Trilho" Property="Background" Value="#E7E7EC"/>
+                            <Setter TargetName="Pino" Property="HorizontalAlignment" Value="Right"/>
+                            <Setter TargetName="Pino" Property="Fill" Value="#171719"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Trilho" Property="BorderBrush" Value="#FFFFFF"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Trilho" Property="Opacity" Value="0.42"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Faixa" TargetType="Slider">
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="IsSnapToTickEnabled" Value="True"/>
+        <Setter Property="IsMoveToPointEnabled" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Border x:Name="Contorno" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="8" Padding="3,0">
+                        <Track x:Name="PART_Track" VerticalAlignment="Center">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                    <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="#DADAE1" Height="4" CornerRadius="2"/></ControlTemplate></RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Width="18" Height="22">
+                                    <Thumb.Template><ControlTemplate TargetType="Thumb"><Ellipse Width="14" Height="14" Fill="#FFFFFF"/></ControlTemplate></Thumb.Template>
+                                </Thumb>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                    <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="#383841" Height="4" CornerRadius="2"/></ControlTemplate></RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Contorno" Property="BorderBrush" Value="#A9A9B5"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Contorno" Property="Opacity" Value="0.4"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="TabItem">
+        <Setter Property="Foreground" Value="{StaticResource PufoSecondary}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Fundo" CornerRadius="8" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" Padding="11,8" Margin="0,0,0,4">
+                        <DockPanel>
+                            <Viewbox DockPanel.Dock="Left" Width="16" Height="16" Margin="0,0,10,0">
+                                <Path Data="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.4" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                            </Viewbox>
+                            <ContentPresenter ContentSource="Header" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Fundo" Property="Background" Value="#1D1D22"/></Trigger>
+                        <Trigger Property="IsSelected" Value="True"><Setter TargetName="Fundo" Property="Background" Value="#26262C"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Fundo" Property="BorderBrush" Value="#9D9DAA"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TracoJanela" TargetType="Path">
+        <Setter Property="Stroke" Value="#E6E6EC"/><Setter Property="StrokeThickness" Value="1.3"/>
+        <Setter Property="StrokeLineJoin" Value="Round"/><Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="LegendaJanela" TargetType="Button">
+        <Setter Property="Width" Value="38"/>
+        <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+            <Border x:Name="Fundo" CornerRadius="7" Background="Transparent" BorderBrush="Transparent" BorderThickness="1">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Fundo" Property="Background" Value="#27272D"/></Trigger>
+                <Trigger Property="IsPressed" Value="True"><Setter TargetName="Fundo" Property="Background" Value="#37373F"/></Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Fundo" Property="BorderBrush" Value="#C2C2CC"/></Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate></Setter.Value></Setter>
+    </Style>
+</ResourceDictionary>

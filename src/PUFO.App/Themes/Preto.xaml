@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="PufoSurface" Color="#000000"/>
+    <SolidColorBrush x:Key="PufoWindow" Color="#0D0D0F"/>
+    <SolidColorBrush x:Key="PufoCard" Color="#151518"/>
+    <SolidColorBrush x:Key="PufoBorder" Color="#26262C"/>
+    <SolidColorBrush x:Key="PufoText" Color="#F5F5F7"/>
+    <SolidColorBrush x:Key="PufoSecondary" Color="#ADADB9"/>
+</ResourceDictionary>
