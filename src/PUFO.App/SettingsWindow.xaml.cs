@@ -134,6 +134,7 @@ public partial class SettingsWindow : Window
 
     private void AoMudarCategoria(object sender, SelectionChangedEventArgs e)
     {
+        if (ReferenceEquals(e.OriginalSource, Categorias) && AbaAssistente?.IsSelected == true) CarregarOpcoesVoz();
         if (!ReferenceEquals(e.OriginalSource, Categorias) || _configuracoes?.Animacoes != true ||
             !SystemParameters.ClientAreaAnimation || Categorias.Template?.FindName("PART_SelectedContentHost", Categorias) is not ContentPresenter conteudo) return;
         var animacao = new DoubleAnimation(0.7, 1, TimeSpan.FromMilliseconds(15000d / _configuracoes.VelocidadeAnimacoes))

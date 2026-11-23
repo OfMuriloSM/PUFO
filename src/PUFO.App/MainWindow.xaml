@@ -12,6 +12,10 @@
             <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="Themes/Preto.xaml"/></ResourceDictionary.MergedDictionaries>
         <SolidColorBrush x:Key="Secondary" Color="#93939D"/>
         <SolidColorBrush x:Key="Accent" Color="#F5F5F7"/>
+        <Geometry x:Key="MicrofoneVoz">M 8,4 A 3,3 0 0 1 14,4 V 10 A 3,3 0 0 1 8,10 Z M 5,9 V 10 A 6,6 0 0 0 17,10 V 9 M 11,16 V 20 M 8,20 H 14</Geometry>
+        <Geometry x:Key="EsperaVoz">M 2,10 H 4 M 8,10 H 10 M 14,10 H 16</Geometry>
+        <Geometry x:Key="RespostaVoz">M 2,4 H 18 V 14 H 9 L 4,18 V 14 H 2 Z</Geometry>
+        <Geometry x:Key="AvisoVoz">M 10,2 L 19,17 H 1 Z M 10,7 V 11 M 10,14 V 15</Geometry>
         <Geometry x:Key="Speaker">M 3,9 L 7,9 12,5 12,19 7,15 3,15 Z M 16,8 C 19,10 19,14 16,16 M 19,5 C 24,9 24,15 19,19</Geometry>
         <Geometry x:Key="Muted">M 3,9 L 7,9 12,5 12,19 7,15 3,15 Z M 17,9 L 23,15 M 23,9 L 17,15</Geometry>
         <Geometry x:Key="ChevronDown">M 3,5 L 8,10 13,5</Geometry>
@@ -150,6 +154,10 @@
             <Grid x:Name="Recorte">
                 <controls:MedidorConteudo>
                 <Grid x:Name="ConteudoIlha" SizeChanged="AoMudarTamanhoConteudo" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <DockPanel x:Name="PainelVoz" Visibility="Collapsed" MaxWidth="340" Margin="16,9" AutomationProperties.LiveSetting="Polite">
+                        <Path x:Name="SimboloVoz" Width="16" Height="17" Margin="0,0,9,0" VerticalAlignment="Center" Stretch="Uniform" Stroke="White" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeEndLineCap="Round"/>
+                        <TextBlock x:Name="MensagemVoz" FontSize="13" Foreground="#F5F5F7" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    </DockPanel>
                     <Grid x:Name="ViewRepouso" Width="124" Height="22"/>
                     <ContentControl x:Name="HostPrevia" Visibility="Collapsed" HorizontalContentAlignment="Stretch">
                         <StackPanel x:Name="ViewPrevia" Margin="7,4" KeyboardNavigation.TabNavigation="Cycle">

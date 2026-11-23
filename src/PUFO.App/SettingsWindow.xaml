@@ -141,6 +141,36 @@
                     </ItemsControl>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="AbaAssistente" Header="Assistente" Tag="M 5,3 A 3,3 0 0 1 11,3 V 8 A 3,3 0 0 1 5,8 Z M 2,7 A 6,6 0 0 0 14,7 M 8,13 V 16">
+                <StackPanel>
+                    <TextBlock Text="Assistente" Style="{StaticResource Titulo}"/>
+                    <Border Style="{StaticResource Cartao}"><StackPanel>
+                        <TextBlock Text="Reconhecimento local · pt-BR" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="EstadoMicrofone" Margin="0,5" Style="{StaticResource Legenda}" AutomationProperties.LiveSetting="Polite"/>
+                        <TextBlock Text="Mouse3 na ilha usa o microfone padrão e o Vosk. Clique novamente para cancelar." Style="{StaticResource Legenda}"/>
+                        <TextBlock Text="Entrada para teste" Margin="0,9,0,2"/>
+                        <ComboBox x:Name="EntradaTeste" DisplayMemberPath="Nome" AutomationProperties.Name="Microfone para teste"/>
+                        <ComboBox x:Name="MotorTeste" Margin="0,5,0,0" SelectedIndex="0" AutomationProperties.Name="Motor para teste">
+                            <ComboBoxItem Content="Vosk · português"/><ComboBoxItem Content="Windows · pt-BR"/>
+                        </ComboBox>
+                        <Button Content="Testar reconhecimento" Click="AoTestarEntrada" Style="{StaticResource Acao}" Margin="0,6,0,0"/>
+                        <TextBlock x:Name="ModeloLocal" TextWrapping="Wrap" Style="{StaticResource Legenda}" Margin="0,5"/>
+                    </StackPanel></Border>
+                    <Border Style="{StaticResource Cartao}"><StackPanel>
+                        <TextBlock Text="Síntese local · pt-BR" FontWeight="SemiBold"/>
+                        <ComboBox x:Name="VozTeste" DisplayMemberPath="DisplayName" Margin="0,5" AutomationProperties.Name="Voz para teste"/>
+                        <TextBox x:Name="TextoParaFalar" MaxLength="180" Text="Olá. Estou ouvindo." AutomationProperties.Name="Texto para testar a síntese"/>
+                        <Button x:Name="TestarFala" Content="Ouvir texto" Click="AoTestarFala" Style="{StaticResource Acao}" Margin="0,6,0,0"/>
+                    </StackPanel></Border>
+                    <Border Style="{StaticResource Cartao}"><StackPanel>
+                        <TextBlock Text="Previsão · Open-Meteo" FontWeight="SemiBold"/>
+                        <TextBlock Text="Cidade ou cidade, estado, país" Style="{StaticResource Legenda}" Margin="0,4"/>
+                        <TextBox x:Name="CidadeConsulta" MaxLength="140" AutomationProperties.Name="Localidade para o clima"/>
+                        <WrapPanel><Button Content="Temperatura" Click="AoConsultarTemperatura" Style="{StaticResource Acao}" Margin="0,6,6,0"/>
+                            <Button Content="Chuva hoje" Click="AoConsultarChuva" Style="{StaticResource Acao}" Margin="0,6,0,0"/></WrapPanel>
+                    </StackPanel></Border>
+                </StackPanel>
+            </TabItem>
         </TabControl>
         <TextBlock x:Name="Aviso" Grid.Row="1" Margin="176,8,0,0" Style="{StaticResource Legenda}" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
     </Grid>

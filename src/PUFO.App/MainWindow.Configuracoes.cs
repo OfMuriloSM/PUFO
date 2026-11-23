@@ -34,6 +34,8 @@ public partial class MainWindow
         {
             var janela = new SettingsWindow(_configuracoes, _servicoConfiguracoes.Pasta, _inicializacaoWindows);
             _janelaConfiguracoes = janela;
+            janela.SessaoVoz = _sessaoVoz;
+            janela.MostrarAtividadeVoz(_sessaoVoz.Fase);
             janela.AtualizarAudio(_ultimoStatus);
             janela.AtualizarMidia(_selecaoMidia.Atual, _erroMidia);
             janela.PreferenciasAlteradas += AplicarPreferencias;
@@ -69,6 +71,7 @@ public partial class MainWindow
         var anteriores = _configuracoes;
         if (preferencias == anteriores) return;
         _configuracoes = preferencias;
+        if (VozVisivel) AnimarMicrofone();
         if (preferencias.MidiaAtiva != anteriores.MidiaAtiva) ConfigurarFonteMidia();
         if (preferencias.MidiaNaPrevia != anteriores.MidiaNaPrevia || preferencias.PrioridadeMidia != anteriores.PrioridadeMidia)
             ApresentarMidia();

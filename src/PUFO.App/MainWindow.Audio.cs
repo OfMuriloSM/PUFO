@@ -96,7 +96,7 @@ public partial class MainWindow
 
     private void MostrarVolumeContextual()
     {
-        if (_moduloSelecionado is not null || _estadoIlha == EstadoIlha.Completo || _previaPersonalizada || _ocultoPorTelaCheia ||
+        if (VozVisivel || _moduloSelecionado is not null || _estadoIlha == EstadoIlha.Completo || _previaPersonalizada || _ocultoPorTelaCheia ||
             _bloquearHoverAteSair || _ultimoStatus?.Disponivel != true) return;
 
         _timerContexto.Stop();

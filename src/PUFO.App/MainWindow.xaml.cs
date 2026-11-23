@@ -51,12 +51,13 @@ public partial class MainWindow : Window
         ConfigurarPreferencias();
         ConfigurarBandeja();
         PrepararModulos();
+        PrepararVoz();
         PrepararMidia(conectarMidia);
         Loaded += (_, _) => { AtualizarAudioUi(); MudarEstado(EstadoIlha.Repouso); };
         SizeChanged += (_, _) => CentralizarJanela();
         DpiChanged += (_, _) => AgendarMedicao();
         Microsoft.Win32.SystemEvents.DisplaySettingsChanged += AoMudarMonitores;
-        Deactivated += (_, _) => { if (!_abrindoConfiguracoesDaIlha && _estadoIlha == EstadoIlha.Completo) FecharManualmente(); };
+        Deactivated += (_, _) => { if (!VozVisivel && !_abrindoConfiguracoesDaIlha && _estadoIlha == EstadoIlha.Completo) FecharManualmente(); };
         Closed += AoFecharAplicacao;
         _timerTelaCheia.Start();
         _timerAudioSync.Start();
@@ -138,6 +139,7 @@ public partial class MainWindow : Window
     private void AoEntrarNaArea(object sender, System.Windows.Input.MouseEventArgs e)
     {
         _timerFechamento.Stop();
+        if (VozVisivel) return;
         if (!_bloquearHoverAteSair && _estadoIlha == EstadoIlha.Repouso)
         {
             _timerHover.Stop();
@@ -149,7 +151,7 @@ public partial class MainWindow : Window
     {
         Dispatcher.BeginInvoke(() =>
         {
-            if (PonteiroSobreIlha()) return;
+            if (VozVisivel || PonteiroSobreIlha()) return;
             _timerHover.Stop();
             _bloquearHoverAteSair = false;
             if (_estadoIlha == EstadoIlha.Previa)
@@ -191,6 +193,7 @@ public partial class MainWindow : Window
 
     private void AoClicarEsquerdoNaArea(object sender, MouseButtonEventArgs e)
     {
+        if (VozVisivel) { e.Handled = true; return; }
         if (_estadoIlha == EstadoIlha.Previa && HostModulo.IsMouseOver) return;
         if (_estadoIlha != EstadoIlha.Completo) MudarEstado(EstadoIlha.Completo);
         e.Handled = true;
@@ -198,12 +201,14 @@ public partial class MainWindow : Window
 
     private void AoClicarDireitoNaArea(object sender, MouseButtonEventArgs e)
     {
-        if (_estadoIlha != EstadoIlha.Repouso) FecharManualmente();
+        if (VozVisivel) _sessaoVoz.Cancelar();
+        else if (_estadoIlha != EstadoIlha.Repouso) FecharManualmente();
         e.Handled = true;
     }
 
     private void AoPressionarTecla(object sender, System.Windows.Input.KeyEventArgs e)
     {
+        if (VozVisivel) { if (e.Key == Key.Escape) _sessaoVoz.Cancelar(); e.Handled = true; return; }
         if (e.Key == Key.F6)
         {
             MudarEstado(EstadoIlha.Previa);
@@ -273,9 +278,10 @@ public partial class MainWindow : Window
 
     private void AtualizarConteudo()
     {
-        ViewRepouso.Visibility = _estadoIlha == EstadoIlha.Repouso ? Visibility.Visible : Visibility.Collapsed;
-        HostPrevia.Visibility = _estadoIlha == EstadoIlha.Previa ? Visibility.Visible : Visibility.Collapsed;
-        HostCompleto.Visibility = _estadoIlha == EstadoIlha.Completo ? Visibility.Visible : Visibility.Collapsed;
+        PainelVoz.Visibility = VozVisivel ? Visibility.Visible : Visibility.Collapsed;
+        ViewRepouso.Visibility = !VozVisivel && _estadoIlha == EstadoIlha.Repouso ? Visibility.Visible : Visibility.Collapsed;
+        HostPrevia.Visibility = !VozVisivel && _estadoIlha == EstadoIlha.Previa ? Visibility.Visible : Visibility.Collapsed;
+        HostCompleto.Visibility = !VozVisivel && _estadoIlha == EstadoIlha.Completo ? Visibility.Visible : Visibility.Collapsed;
         HostPrevia.Content = _previaPersonalizada ? _conteudoPrevia : ViewPrevia;
         RolagemCompleto.Content = _completoPersonalizado ? _conteudoCompleto : ViewCompleto;
         HostCompleto.Content = RolagemCompleto.Content is null ? null : RolagemCompleto;
@@ -309,12 +315,13 @@ public partial class MainWindow : Window
         ConteudoIlha.MaxHeight = maxHeight - 2;
         ConteudoIlha.Measure(new Size(maxWidth - 2, maxHeight - 2));
         bool vazio = _estadoIlha == EstadoIlha.Previa ? HostPrevia.Content is null : _estadoIlha == EstadoIlha.Completo && HostCompleto.Content is null;
+        vazio &= !VozVisivel;
         var tamanho = vazio ? new Size(18, 18) : new Size(Math.Clamp(ConteudoIlha.DesiredSize.Width + 2, 18, maxWidth), Math.Clamp(ConteudoIlha.DesiredSize.Height + 2, 18, maxHeight));
         if (!trocarEstado && Math.Abs(tamanho.Width - _tamanhoDestino.Width) < 0.5 && Math.Abs(tamanho.Height - _tamanhoDestino.Height) < 0.5) return;
         _tamanhoDestino = tamanho;
         int revisao = ++_transicao;
         double raioFinal = _estadoIlha == EstadoIlha.Completo && !vazio ? 26 : Math.Min(22, tamanho.Height / 2);
-        double y = _estadoIlha == EstadoIlha.Repouso ? -12 : 8;
+        double y = !VozVisivel && _estadoIlha == EstadoIlha.Repouso ? -12 : 8;
         // The section reveal already animates measured height. A second easing curve here would trail the content.
         if (!AnimacoesPermitidas || (!trocarEstado && _estadoIlha == EstadoIlha.Completo))
         {
@@ -395,6 +402,7 @@ public partial class MainWindow : Window
         _ocultoPorTelaCheia = telaCheia;
         if (telaCheia)
         {
+            _sessaoVoz.Cancelar();
             _timerContexto.Stop();
             _previaContextual = false;
             MudarEstado(EstadoIlha.Repouso);
@@ -409,6 +417,7 @@ public partial class MainWindow : Window
     private void AoFecharAplicacao(object? sender, EventArgs e)
     {
         _encerrado = true;
+        _sessaoVoz.Cancelar();
         PararMedicao();
         _esperaModulo.Stop();
         Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= AoMudarMonitores;
