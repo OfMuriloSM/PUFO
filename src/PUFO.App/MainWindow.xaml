@@ -1,26 +1,69 @@
-﻿<Window x:Class="PUFO.App.MainWindow"
+﻿
+<Window x:Class="PUFO.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PUFO.App"
-        mc:Ignorable="d"
         Title="PUFO"
-        Height="200"
-        Width="400"
         WindowStyle="None"
+        ResizeMode="NoResize"
         AllowsTransparency="True"
-        Background="transparent"
-        >
-    <Grid>
-    <Border
-        x:Name="Capsula"
-        Background="black"
-        CornerRadius="18"
-        Height="35"
-        Width="150"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="Manual"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        UseLayoutRounding="True">
+
+    <Grid x:Name="Raiz" MinWidth="160">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Região permanente de ativação -->
+        <Grid x:Name="AreaAtivacao"
+              Grid.Row="0"
+              Height="22"
+              Background="#01000000"
+              MouseEnter="AoEntrarNaArea"
+              MouseLeave="AoSairDaArea"
+              MouseLeftButtonDown="AoClicarEsquerdo"
+              MouseRightButtonDown="AoClicarDireito">
+
+            <!-- Barrinha visível no repouso -->
+            <Border x:Name="BarraRepouso"
+                    Width="130"
+                    Height="22"
+                    Margin="0,-9,0,0"
+                    Background="#050505"
+                    CornerRadius="0,0,12,12"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"/>
+        </Grid>
+
+        <!-- Cápsula com dimensões adaptáveis -->
+        <Border x:Name="Capsula"
+                Grid.Row="1"
+                Width="34"
+                Height="34"
+                MinWidth="34"
+                MinHeight="34"
+                Background="#050505"
+                CornerRadius="17"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Visibility="Collapsed"
+                MouseEnter="AoEntrarNaArea"
+                MouseLeave="AoSairDaArea"
+                MouseLeftButtonDown="AoClicarEsquerdo"
+                MouseRightButtonDown="AoClicarDireito">
+
+            <ContentPresenter x:Name="ConteudoIlha"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+
         </Border>
+
     </Grid>
 </Window>
