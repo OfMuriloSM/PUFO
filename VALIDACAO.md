@@ -1,4 +1,44 @@
-﻿# Validação do PUFO V3.2
+﻿# Validação do PUFO V4.0 em desenvolvimento
+
+A branch `feature/v4-voice` contém reconhecimento local por Mouse3 e uma bancada de teste de entrada, síntese e clima. Nesta revisão a ilha apresenta a transcrição. O interpretador de comandos, o executor e a persistência das preferências de voz continuam pendentes. Os controles da V3.2 seguem disponíveis.
+
+## Ponto de recuperação
+
+A tag de prévia `v3.2.0-preview.1` referencia o commit `55b674c` de `feature/v2-audio`, verificado com build Release e 100 verificações aprovadas antes da criação da branch V4.
+
+## Resultado desta revisão
+
+O build Release terminou com 0 erros e 0 avisos. As 122 verificações passaram neste notebook, incluindo as 100 regressões da V3.2. Uma voz brasileira instalada gerou “Que horas são?” diretamente em memória e o Vosk transcreveu “que horas são”. Os testes de ciclo de captura e cancelamento usaram entradas simuladas. O cliente de clima recebeu respostas HTTP locais de teste. A validação física do microfone, da reprodução audível, do F11 e da consulta meteorológica ao vivo está pendente.
+
+| Área | Arquivos da revisão |
+| --- | --- |
+| Entrada, transcrição e síntese | `Services/Voz/MicrofoneWindows.cs`, `ReconhecimentoLocal.cs`, `FalaWindows.cs`, `SessaoVoz.cs` |
+| Clima | `Services/ClimaOpenMeteo.cs` |
+| Ilha e testes de voz nas Configurações | `MainWindow.Voz.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, `MainWindow.Audio.cs`, `MainWindow.Configuracoes.cs`, `SettingsWindow.Voz.cs`, `SettingsWindow.xaml`, `SettingsWindow.xaml.cs` |
+| Build e suíte | `PUFO.App.csproj`, `tests/PUFO.SmokeTests/Program.cs`, `tests/PUFO.SmokeTests/Voz.cs`, `VALIDACAO.md` |
+
+As dependências novas são Vosk 0.3.38 e System.Speech 10.0.15. A síntese usa o contrato WinRT já disponível no projeto. O modelo acústico está fora do Git.
+
+## Reconhecimento e síntese
+
+- Mouse3 sobre a cápsula inicia uma fala de até sete segundos usando a entrada padrão. O primeiro pacote de áudio ativa o indicador. Uma pausa de aproximadamente 900 ms encerra a frase. Mouse3 novamente cancela a operação. A cápsula mostra a transcrição brevemente e retorna ao estado anterior.
+- A captura usa NAudio em modo compartilhado, mono, PCM de 16 bits a 16 kHz. O Vosk carrega o modelo sob demanda, decodifica a frase localmente e libera o modelo. O áudio fica em memória durante a operação. A aplicação não cria arquivos de áudio, histórico de transcrições ou telemetria.
+- Para usar o Vosk no Windows x64, extraia o modelo oficial `vosk-model-small-pt-0.3` em `%LocalAppData%\PUFO\modelos\vosk-model-small-pt-0.3`. O arquivo `final.mdl` deve ficar diretamente nessa pasta. O modelo português leve tem limitações com ruído e pronúncias diferentes. [Modelo português e licença](https://alphacephei.com/vosk/models)
+- **Configurações → Assistente** permite testar uma entrada e escolher Vosk ou SAPI. O teste SAPI exige um reconhecedor instalado de cultura `pt-BR`. Instalar uma voz de síntese não instala necessariamente esse reconhecedor. O teste de saída lista as vozes brasileiras fornecidas por `Windows.Media.SpeechSynthesis`. As escolhas desses testes valem para o teste atual.
+- O painel também consulta temperatura ou probabilidade máxima de chuva para a cidade digitada. Somente uma consulta explícita envia a cidade ao geocodificador e as coordenadas públicas da cidade ao serviço de previsão. Para um nome ambíguo, informe também estado e país, por exemplo `Fortaleza, Ceará, BR`. [Geocodificação](https://open-meteo.com/en/docs/geocoding-api) · [Previsão Open-Meteo](https://open-meteo.com/en/docs)
+
+## Roteiro manual da V4
+
+| Caso | Ação e resultado esperado |
+| --- | --- |
+| Microfone e retorno visual | Em Repouso, Prévia e Completo, clique a rodinha sobre a superfície. Aguarde **Ouvindo**, diga uma frase curta em português e faça uma pausa. Confira a transcrição e o retorno ao estado de origem. |
+| Cancelamento e silêncio | Repita o clique durante a captura, durante o processamento e durante **Ouvir texto**. Confira o encerramento e a liberação da entrada antes da próxima tentativa. Permaneça em silêncio até o prazo expirar. |
+| Ausência ou permissão | Em Assistente, selecione o microfone e teste após desconectá-lo ou suspender o acesso nas opções de privacidade do Windows. Verifique a mensagem e repita com uma entrada disponível. |
+| Vozes locais | Escolha uma voz brasileira e use **Ouvir texto**. Em uma máquina sem voz compatível, confira a indicação. Teste SAPI apenas com reconhecedor brasileiro instalado. |
+| Interação | Experimente Mouse3 em abas de navegador fora da ilha, clique esquerdo e direito, volume, mixer e Wi-Fi. Entre em F11 durante a captura e verifique que ela termina. Teste também redução de movimento. |
+| Clima | Consulte uma localidade inequívoca, outra ambígua e uma inexistente. Desconecte a rede e confira o retorno de indisponibilidade. Compare o resultado real com o Open-Meteo para a mesma cidade. |
+
+## Histórico da V3.2
 
 Na versão `3.2.0-preview.1`, o hover de 500 ms abre os atalhos Iniciar, Áudio, Wi-Fi, Notificações e Configurações. O atraso e o tempo de fechamento seguem as preferências salvas. Com os padrões, a faixa aparece ao entrar em Áudio ou durante a prévia de volume. Quem habilitar **Priorizar a faixa durante a reprodução** também vê a mídia sob a fileira inicial. O painel completo mantém o mixer, o seletor de saída e as sessões de mídia da V3.1.
 

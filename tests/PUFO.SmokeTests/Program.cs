@@ -82,6 +82,7 @@ internal static partial class Program
             TestarMidia(window);
             TestarConfiguracoes(window, capsule, preferencias);
             ConsultarMidiaWindows(window);
+            TestarVoz(window);
             Console.WriteLine($"PASS: {_checks} verificacoes. Audio disponivel: {status.Disponivel}.");
             return 0;
         }
