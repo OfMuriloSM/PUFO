@@ -26,7 +26,7 @@ internal static class ReconhecimentoLocal
         { throw new InvalidOperationException("Microfone indisponível. Confira a entrada e a permissão de microfone do Windows.", e); }
         try
         {
-            return usarWindows ? await DecodificarWindowsAsync(pcm, token) :
+            return usarWindows ? await Task.Run(() => DecodificarWindowsAsync(pcm, token), token) :
                 await Task.Run(() => DecodificarVosk(pcm, token), token);
         }
         finally { Array.Clear(pcm); }
