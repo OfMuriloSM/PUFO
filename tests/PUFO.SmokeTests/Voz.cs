@@ -50,6 +50,23 @@ internal static partial class Program
                 $"Segundo Mouse3 cancela e restaura {estado}");
         }
         Check(capturas == 3, "Um acionamento abre uma única captura");
+        var tardio = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var fases = new List<FaseVoz>();
+        void Registrar(FaseVoz fase, string mensagem) => fases.Add(fase);
+        sessao.Mudou += Registrar;
+        janela.ReconhecerMouse = (atividade, _) =>
+        {
+            atividade(false);
+            return tardio.Task;
+        };
+        Mouse3((UIElement)janela.FindName("BtnMixer"));
+        Check(sessao.Fase == FaseVoz.Processando, "Resultado pendente mantém a ilha em processamento");
+        Mouse3(painel);
+        tardio.SetResult("Resultado atrasado");
+        Pump(100);
+        sessao.Mudou -= Registrar;
+        Check(!sessao.Ocupada && !fases.Contains(FaseVoz.Respondendo),
+            "Resultado entregue após cancelar por Mouse3 não publica resposta");
         janela.ReconhecerMouse = (_, _) => Task.FromException<string>(new TimeoutException());
         Mouse3((UIElement)janela.FindName("BtnMixer"));
         Check(sessao.Fase == FaseVoz.Erro, "Timeout produz feedback visual");

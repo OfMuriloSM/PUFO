@@ -2,6 +2,14 @@
 
 A branch `feature/v4-voice` contém reconhecimento local por Mouse3 e uma bancada de teste de entrada, síntese e clima. Nesta revisão a ilha apresenta a transcrição. O interpretador de comandos, o executor e a persistência das preferências de voz continuam pendentes. Os controles da V3.2 seguem disponíveis.
 
+## V4.0.1 parcial
+
+Build Release concluído com zero erros e avisos. As 124 verificações passaram, incluindo as 122 anteriores.
+
+A revisão parcial da V4.0.1 move o carregamento da gramática SAPI para fora do Dispatcher. A suíte inclui um reconhecimento simulado que entrega a transcrição após o segundo Mouse3 e verifica que a ilha encerra a operação sem apresentar a resposta atrasada.
+
+Para verificar o limite atual no Windows, acione Mouse3 e diga separadamente “Que horas são?”, “Coloca o volume em 30%”, “Pausa a música”, “Abre as configurações” e “Como está o clima?”. A ilha apresenta somente a transcrição. Responder com a hora local, alterar o volume, pausar a sessão, abrir Configurações e consultar a cidade pela voz são critérios pendentes. O roteiro abaixo cobre Mouse3 e F11. As escolhas da bancada de voz são temporárias; a recuperação dessas preferências após reiniciar também está pendente.
+
 ## Ponto de recuperação
 
 A tag de prévia `v3.2.0-preview.1` referencia o commit `55b674c` de `feature/v2-audio`, verificado com build Release e 100 verificações aprovadas antes da criação da branch V4.
