@@ -88,6 +88,34 @@ internal static partial class Program
         campo.SetValue(janela, true);
         Check(!Mouse3((UIElement)janela.FindName("BtnMixer")) && !sessao.Ocupada, "Fullscreen bloqueia Mouse3");
         campo.SetValue(janela, false);
+        janela.ReconhecerMouse = async (atividade, token) =>
+        {
+            atividade(true);
+            await Task.Delay(Timeout.Infinite, token);
+            return "";
+        };
+        Mouse3((UIElement)janela.FindName("BtnMixer"));
+        janela.AplicarTelaCheia(true);
+        Pump(80);
+        Check(!janela.IsVisible && !sessao.Ocupada, "Entrada em fullscreen oculta ilha e encerra captura");
+        janela.AplicarTelaCheia(false);
+        Check(janela.IsVisible, "Saída de fullscreen restaura a ilha");
+        var ajustes = janela.AbrirConfiguracoes();
+        var teste = sessao.ExecutarAsync(async (_, token) =>
+        {
+            await Task.Delay(Timeout.Infinite, token);
+            return "";
+        }, origem: ajustes);
+        ajustes.Close();
+        Pump(80);
+        Check(teste.IsCompletedSuccessfully && !sessao.Ocupada, "Fechar Configurações libera a operação da bancada");
+        ajustes = janela.AbrirConfiguracoes();
+        Mouse3((UIElement)janela.FindName("AreaAtivacao"));
+        ajustes.Close();
+        Pump(60);
+        Check(sessao.Fase == FaseVoz.Ouvindo, "Fechar Configurações preserva uma captura iniciada na ilha");
+        Mouse3(painel);
+        Pump(60);
         janela.ReconhecerMouse = reconhecer;
 
         Task.Run(TestarClima).GetAwaiter().GetResult();
@@ -147,7 +175,15 @@ internal static partial class Program
         var bloco = new byte[8192];
         int lidos;
         while ((lidos = pcm.Read(bloco)) > 0) buffer.Write(bloco, 0, lidos);
-        string texto = ReconhecimentoLocal.DecodificarVosk(buffer.ToArray(), default);
+        using var reconhecimento = new ReconhecimentoLocal();
+        var pcmReal = buffer.ToArray();
+        var tempo = System.Diagnostics.Stopwatch.StartNew();
+        string texto = reconhecimento.DecodificarVosk(pcmReal, default);
+        long frio = tempo.ElapsedMilliseconds;
+        tempo.Restart();
+        string repetida = reconhecimento.DecodificarVosk(pcmReal, default);
+        Console.WriteLine($"Vosk em ms, primeira frase {frio}, repetida {tempo.ElapsedMilliseconds}");
+        Check(repetida == texto, "Segunda frase independente reutiliza o modelo português");
         Console.WriteLine($"Frase sintética reconhecida em memória: {texto}");
         Check(texto.Length > 0, "Voz brasileira e modelo Vosk reais processam amostra sintética sem reprodução nem microfone");
     }
