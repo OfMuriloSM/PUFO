@@ -1,4 +1,27 @@
-﻿# Validação do PUFO V4.0 em desenvolvimento
+﻿# Validação do PUFO 4.1.0-preview.1
+
+## Estabilização de 24 de novembro de 2026
+
+Restore concluído. Build Release com zero erros e avisos. Passaram 129 verificações, incluindo as 124 anteriores. Na rodada final, os tempos do Vosk foram 2.565 ms e 1.361 ms respectivamente para a primeira frase e a repetição.
+
+A branch partiu de `ddf3622`. Mouse3 inicia a transcrição em português nos três estados. O interpretador e as preferências persistentes da assistente continuam bloqueados. Nenhuma frase aciona volume, mídia, interface, relógio ou clima por voz nesta build.
+
+O modelo Vosk permanece em memória após a primeira frase até fechar a ilha. Cada frase usa um reconhecedor próprio. O encerramento libera o modelo após a última leitura. Na primeira rodada desta revisão, a mesma amostra sintética levou 3.147 ms com a carga inicial e 996 ms com o modelo residente. Os tempos incluem decodificação e excluem a captura. Essa escolha aumenta o uso de memória entre frases. A pausa de 900 ms e o limite de sete segundos seguem em vigor. A transcrição “lá” continua sem reprodução com microfone físico.
+
+Fechar Configurações cancela o teste iniciado ali e preserva uma captura iniciada pela ilha. A suspensão do Windows solicita o cancelamento da sessão. A mensagem na ilha admite até três linhas com reticências. O teste de voz informa quando a voz selecionada desaparece.
+
+A suíte usa janelas WPF reais, injeta a transição de fullscreen e simula a captura para verificar cancelamento e restauração. O teste Vosk usa áudio sintetizado em memória. A primeira leitura WASAPI retornou três grupos controláveis e zero fontes com pico naquela amostra. O acesso interativo ao desktop falhou ao inicializar o kernel com o erro 3 do Windows. Nenhum cenário físico foi homologado nesta revisão.
+
+**Gravação no Windows**
+
+1. Inicie o executável Release. Clique a rodinha, aguarde **Ouvindo**, diga “Satomi, que horas são?” e registre a transcrição exata e o retorno ao estado anterior. Repita sem o prefixo. A resposta com o horário segue pendente.
+2. Em **Configurações → Assistente**, escolha a voz brasileira, use **Ouvir texto** e confira a saída selecionada, o mute e se a frase é audível. Repita e feche Configurações durante a fala. Confira se a reprodução para.
+3. Inicie a escuta, cancele com Mouse3 e repita entrando em F11. Ao sair do fullscreen, confira se é possível iniciar outra captura. Repita após suspender e retomar o notebook.
+4. Abra Spotify e YouTube, escolha uma sessão no painel e pause pelo controle visual. Registre qual player parou e se a seleção permanece após trocar de faixa. Repita com MP4/MKV quando o player publicar sessão. Confira mixer, saída e Wi-Fi pelos módulos. Repita a navegação a 100% e 150% de DPI e no segundo monitor, quando disponível.
+
+A interface privada de seleção de saída depende da versão do Windows. A edição sem pacote oferece o acesso nativo às notificações. A inicialização automática exige distribuição instalada. A recuperação das escolhas de voz após reiniciar, a execução de comandos falados e a resposta com a hora real permanecem como critérios de aceite em aberto.
+
+## Histórico da V4.0
 
 A branch `feature/v4-voice` contém reconhecimento local por Mouse3 e uma bancada de teste de entrada, síntese e clima. Nesta revisão a ilha apresenta a transcrição. O interpretador de comandos, o executor e a persistência das preferências de voz continuam pendentes. Os controles da V3.2 seguem disponíveis.
 
