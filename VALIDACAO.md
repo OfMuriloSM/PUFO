@@ -1,5 +1,13 @@
 ﻿# Validação do PUFO 4.1.0-preview.1
 
+## Diagnóstico do primeiro comando de voz
+
+A tentativa original de criar o interpretador e o modelo de preferências retornou `Unexpected end of input`. Em seguida, o ambiente informou `Your previous response was blocked by a content filter.` O registro disponível não identifica o critério acionado, o arquivo exato da tentativa nem uma falha de permissão do Windows. A operação bloqueada não foi repetida.
+
+Na revisão `acc0cbe`, o acionamento por Mouse3 em `MainWindow.Voz.cs` chama `ExecutarAsync(ReconhecerMouse)`. Em `Services/Voz/SessaoVoz.cs`, a sessão exibe o texto recebido e só chama a síntese quando o chamador fornece essa função. Portanto, dizer “Que horas são?” ainda exibe a transcrição. A resposta com a hora local e seu teste com relógio e voz simulados continuam pendentes.
+
+Na revalidação do diagnóstico, o build Release terminou com zero erros e avisos. As 129 verificações existentes passaram. O Vosk transcreveu “que horas são” em memória.
+
 ## Estabilização de 24 de novembro de 2026
 
 Restore concluído. Build Release com zero erros e avisos. Passaram 129 verificações, incluindo as 124 anteriores. Na rodada final, os tempos do Vosk foram 2.565 ms e 1.361 ms respectivamente para a primeira frase e a repetição.
