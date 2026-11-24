@@ -20,8 +20,9 @@ public partial class SettingsWindow : Window
 
     internal event Action<ConfiguracoesPufo>? PreferenciasAlteradas;
 
-    internal SettingsWindow(ConfiguracoesPufo configuracoes, string pasta, InicializacaoWindows inicializacao)
+    internal SettingsWindow(ConfiguracoesPufo configuracoes, string pasta, InicializacaoWindows inicializacao, Services.Voz.ReconhecimentoLocal reconhecimento)
     {
+        Reconhecimento = reconhecimento;
         _pasta = pasta;
         _inicializacao = inicializacao;
         InitializeComponent();

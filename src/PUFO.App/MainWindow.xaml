@@ -156,7 +156,7 @@
                 <Grid x:Name="ConteudoIlha" SizeChanged="AoMudarTamanhoConteudo" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <DockPanel x:Name="PainelVoz" Visibility="Collapsed" MaxWidth="340" Margin="16,9" AutomationProperties.LiveSetting="Polite">
                         <Path x:Name="SimboloVoz" Width="16" Height="17" Margin="0,0,9,0" VerticalAlignment="Center" Stretch="Uniform" Stroke="White" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeEndLineCap="Round"/>
-                        <TextBlock x:Name="MensagemVoz" FontSize="13" Foreground="#F5F5F7" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="MensagemVoz" MaxHeight="60" LineHeight="20" LineStackingStrategy="BlockLineHeight" TextTrimming="CharacterEllipsis" FontSize="13" Foreground="#F5F5F7" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </DockPanel>
                     <Grid x:Name="ViewRepouso" Width="124" Height="22"/>
                     <ContentControl x:Name="HostPrevia" Visibility="Collapsed" HorizontalContentAlignment="Stretch">

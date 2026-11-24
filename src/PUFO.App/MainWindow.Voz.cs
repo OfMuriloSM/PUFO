@@ -8,8 +8,8 @@ namespace PUFO.App;
 public partial class MainWindow
 {
     private readonly SessaoVoz _sessaoVoz = new();
-    internal Func<Action<bool>, CancellationToken, Task<string>> ReconhecerMouse { get; set; } =
-        (atividade, token) => ReconhecimentoLocal.OuvirAsync("", false, TimeSpan.FromSeconds(7), atividade, token);
+    private readonly ReconhecimentoLocal _reconhecimento = new();
+    internal Func<Action<bool>, CancellationToken, Task<string>> ReconhecerMouse { get; set; }
     private bool VozVisivel => _sessaoVoz.Fase != FaseVoz.Inativa;
 
     private void PrepararVoz()

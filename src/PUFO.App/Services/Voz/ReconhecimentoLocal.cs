@@ -7,15 +7,31 @@ using Vosk;
 
 namespace PUFO.App.Services.Voz;
 
-internal static class ReconhecimentoLocal
+internal sealed class ReconhecimentoLocal : IDisposable
 {
+    private readonly object _controle = new();
+    private Lazy<Model> _modelo = CriarModelo();
+    private static Lazy<Model> CriarModelo() => new(() => new Model(PastaModelo));
+    private int _leituras;
+    private bool _encerrado;
+
+    public void Dispose()
+    {
+        lock (_controle)
+        {
+            if (_encerrado) return;
+            _encerrado = true;
+            if (_leituras == 0 && _modelo.IsValueCreated) _modelo.Value.Dispose();
+        }
+    }
+
     internal static string PastaModelo => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "PUFO", "modelos", "vosk-model-small-pt-0.3");
     internal static bool TemModelo => File.Exists(Path.Combine(PastaModelo, "final.mdl"));
     internal static RecognizerInfo? Nativo => SpeechRecognitionEngine.InstalledRecognizers()
         .FirstOrDefault(r => r.Culture.Name.Equals("pt-BR", StringComparison.OrdinalIgnoreCase));
 
-    internal static async Task<string> OuvirAsync(string entrada, bool usarWindows, TimeSpan limite, Action<bool> atividade, CancellationToken token)
+    internal async Task<string> OuvirAsync(string entrada, bool usarWindows, TimeSpan limite, Action<bool> atividade, CancellationToken token)
     {
         if (usarWindows && Nativo is null) throw new InvalidOperationException("Reconhecedor Windows pt-BR indisponível. Selecione Vosk.");
         if (!usarWindows && (!TemModelo || RuntimeInformation.ProcessArchitecture != Architecture.X64))
@@ -32,11 +48,36 @@ internal static class ReconhecimentoLocal
         finally { Array.Clear(pcm); }
     }
 
-    internal static string DecodificarVosk(byte[] pcm, CancellationToken token)
+    internal string DecodificarVosk(byte[] pcm, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        Vosk.Vosk.SetLogLevel(-1);
-        using var modelo = new Model(PastaModelo);
+        Lazy<Model> modelo;
+        lock (_controle)
+        {
+            ObjectDisposedException.ThrowIf(_encerrado, this);
+            _leituras++;
+            modelo = _modelo;
+        }
+        try
+        {
+            Vosk.Vosk.SetLogLevel(-1);
+            var carregado = modelo.Value;
+            token.ThrowIfCancellationRequested();
+            return Transcrever(carregado, pcm, token);
+        }
+        finally
+        {
+            lock (_controle)
+            {
+                _leituras--;
+                if (_leituras == 0 && modelo.IsValueCreated && _encerrado) modelo.Value.Dispose();
+                if (_leituras == 0 && !modelo.IsValueCreated && !_encerrado) _modelo = CriarModelo();
+            }
+        }
+    }
+
+    private static string Transcrever(Model modelo, byte[] pcm, CancellationToken token)
+    {
         using var reconhecedor = new VoskRecognizer(modelo, MicrofoneWindows.Frequencia);
         var partes = new List<string>();
         var bloco = new byte[8000];

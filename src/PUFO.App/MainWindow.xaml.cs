@@ -51,6 +51,7 @@ public partial class MainWindow : Window
         ConfigurarPreferencias();
         ConfigurarBandeja();
         PrepararModulos();
+        ReconhecerMouse = (atividade, token) => _reconhecimento.OuvirAsync("", false, TimeSpan.FromSeconds(7), atividade, token);
         PrepararVoz();
         PrepararMidia(conectarMidia);
         Loaded += (_, _) => { AtualizarAudioUi(); MudarEstado(EstadoIlha.Repouso); };
@@ -177,6 +178,9 @@ public partial class MainWindow : Window
 
     private IntPtr FiltrarHitTest(IntPtr hwnd, int mensagem, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        const int WmPowerBroadcast = 0x0218, PbtApmSuspend = 4;
+        if (mensagem == WmPowerBroadcast && wParam == PbtApmSuspend)
+            _sessaoVoz.Cancelar();
         if (mensagem == 0x0084) // WM_NCHITTEST: even the shadow must let underlying apps receive clicks.
         {
             long packed = lParam.ToInt64();
@@ -397,7 +401,11 @@ public partial class MainWindow : Window
 
     private void VerificarTelaCheia()
     {
-        bool telaCheia = Services.DetectorTelaCheia.Existe(new WindowInteropHelper(this).Handle);
+        AplicarTelaCheia(Services.DetectorTelaCheia.Existe(new WindowInteropHelper(this).Handle));
+    }
+
+    internal void AplicarTelaCheia(bool telaCheia)
+    {
         if (telaCheia == _ocultoPorTelaCheia) return;
         _ocultoPorTelaCheia = telaCheia;
         if (telaCheia)
@@ -417,6 +425,7 @@ public partial class MainWindow : Window
     private void AoFecharAplicacao(object? sender, EventArgs e)
     {
         _encerrado = true;
+        _reconhecimento.Dispose();
         _sessaoVoz.Cancelar();
         PararMedicao();
         _esperaModulo.Stop();

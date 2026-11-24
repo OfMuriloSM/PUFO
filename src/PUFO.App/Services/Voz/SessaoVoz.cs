@@ -9,15 +9,21 @@ internal sealed class SessaoVoz
     internal Func<bool>? PodeIniciar { get; set; }
     internal bool Ocupada => _atual is not null;
     internal event Action<FaseVoz, string>? Mudou;
+    private object? _origem;
+    internal void CancelarDe(object origem)
+    {
+        if (ReferenceEquals(_origem, origem)) Cancelar();
+    }
     internal void Cancelar() => _atual?.Cancel();
 
     // Executada no Dispatcher. Cancelar impede trabalho novo até a liberação do dispositivo.
     internal async Task ExecutarAsync(Func<Action<bool>, CancellationToken, Task<string>> obter,
-        Func<string, CancellationToken, Task>? falar = null)
+        Func<string, CancellationToken, Task>? falar = null, object? origem = null)
     {
         if (_atual is not null) { Cancelar(); return; }
         if (PodeIniciar?.Invoke() == false) return;
         using var vida = _atual = new CancellationTokenSource();
+        _origem = origem;
         var token = vida.Token;
         try
         {
@@ -54,7 +60,7 @@ internal sealed class SessaoVoz
                 try { await Task.Delay(3200, token); } catch (OperationCanceledException) { }
             }
         }
-        finally { _atual = null; Mostrar(FaseVoz.Inativa, ""); }
+        finally { _origem = null; _atual = null; Mostrar(FaseVoz.Inativa, ""); }
     }
 
     private void Mostrar(FaseVoz fase, string mensagem)

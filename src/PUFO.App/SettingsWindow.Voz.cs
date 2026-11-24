@@ -9,6 +9,7 @@ namespace PUFO.App;
 public partial class SettingsWindow
 {
     private static readonly HttpClient HttpClima = new();
+    private ReconhecimentoLocal Reconhecimento { get; }
     internal SessaoVoz? SessaoVoz { get; set; }
 
     private void CarregarOpcoesVoz()
@@ -37,7 +38,7 @@ public partial class SettingsWindow
         if (SessaoVoz is null) return;
         string id = (EntradaTeste.SelectedItem as EntradaVoz)?.Id ?? "";
         bool windows = MotorTeste.SelectedIndex == 1;
-        await SessaoVoz.ExecutarAsync((atividade, token) => ReconhecimentoLocal.OuvirAsync(id, windows, TimeSpan.FromSeconds(7), atividade, token));
+        await SessaoVoz.ExecutarAsync((atividade, token) => Reconhecimento.OuvirAsync(id, windows, TimeSpan.FromSeconds(7), atividade, token), origem: this);
     }
 
     private async void AoTestarFala(object sender, RoutedEventArgs e)
@@ -47,15 +48,16 @@ public partial class SettingsWindow
         if (texto.Length == 0) return;
         await SessaoVoz.ExecutarAsync((_, _) => Task.FromResult(texto), async (resposta, token) =>
         {
-            await FalaWindows.DizerAsync(resposta, voz.Id, 0.7, token);
-        });
+            if (!await FalaWindows.DizerAsync(resposta, voz.Id, 0.7, token))
+                MostrarAviso("A voz selecionada está indisponível.");
+        }, origem: this);
     }
 
     private async Task ConsultarClimaAsync(bool chuva)
     {
         if (SessaoVoz is null) return;
         string cidade = CidadeConsulta.Text;
-        await SessaoVoz.ExecutarAsync((_, token) => new ClimaOpenMeteo(HttpClima).ConsultarAsync(cidade, chuva, token));
+        await SessaoVoz.ExecutarAsync((_, token) => new ClimaOpenMeteo(HttpClima).ConsultarAsync(cidade, chuva, token), origem: this);
     }
 
     private async void AoConsultarTemperatura(object sender, RoutedEventArgs e) => await ConsultarClimaAsync(false);

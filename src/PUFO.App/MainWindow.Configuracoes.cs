@@ -32,7 +32,7 @@ public partial class MainWindow
     {
         if (_janelaConfiguracoes is null)
         {
-            var janela = new SettingsWindow(_configuracoes, _servicoConfiguracoes.Pasta, _inicializacaoWindows);
+            var janela = new SettingsWindow(_configuracoes, _servicoConfiguracoes.Pasta, _inicializacaoWindows, _reconhecimento);
             _janelaConfiguracoes = janela;
             janela.SessaoVoz = _sessaoVoz;
             janela.MostrarAtividadeVoz(_sessaoVoz.Fase);
@@ -41,6 +41,7 @@ public partial class MainWindow
             janela.PreferenciasAlteradas += AplicarPreferencias;
             janela.Closed += (_, _) =>
             {
+                _sessaoVoz.CancelarDe(janela);
                 janela.PreferenciasAlteradas -= AplicarPreferencias;
                 _janelaConfiguracoes = null;
                 SalvarPreferencias();
